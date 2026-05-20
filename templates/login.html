@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Login • Whisper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <style>
+        /* Mobile Responsive Fixes */
+@media (max-width: 768px) {
+    /* Posts take full width */
+    .post-card, .create-card, .navbar, .search-container {
+        margin: 8px auto;
+    }
+    
+    /* Smaller fonts on mobile */
+    .post-username, .caption-username {
+        font-size: 13px;
+    }
+    
+    .post-time, .comment-time {
+        font-size: 10px;
+    }
+    
+    /* Touch-friendly buttons */
+    .action-btn {
+        padding: 12px;
+        font-size: 28px;
+    }
+    
+    /* Better spacing for comments */
+    .comment-item {
+        gap: 8px;
+    }
+    
+    .comment-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    
+    /* Navigation icons smaller on mobile */
+    .nav-icons {
+        gap: 12px;
+    }
+    
+    .nav-icons a {
+        font-size: 20px;
+    }
+    
+    /* Stories row adjustments */
+    .story-ring {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .story-inner {
+        width: 56px;
+        height: 56px;
+        font-size: 28px;
+    }
+    
+    .story-name {
+        font-size: 10px;
+    }
+    
+    /* Search bar adjustments */
+    .search-bar {
+        padding: 6px 12px;
+    }
+    
+    .search-bar input {
+        font-size: 14px;
+    }
+    
+    /* Modal adjustments */
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    /* Toast notifications */
+    .toast-message {
+        bottom: 20px;
+        left: 16px;
+        right: 16px;
+        transform: none;
+        width: auto;
+        font-size: 13px;
+    }
+}
+
+/* Extra small devices (phones under 400px) */
+@media (max-width: 480px) {
+    .post-header {
+        padding: 10px 12px;
+    }
+    
+    .post-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    
+    .post-content {
+        font-size: 13px;
+        padding: 0 12px 10px 12px;
+    }
+    
+    .post-actions {
+        padding: 4px 12px;
+        gap: 12px;
+    }
+    
+    .action-btn {
+        padding: 8px;
+        font-size: 24px;
+    }
+    
+    .comments-section {
+        padding: 8px 12px;
+    }
+    
+    .add-comment {
+        padding: 8px 12px;
+    }
+    
+    .add-comment input {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .create-header {
+        gap: 8px;
+    }
+    
+    .create-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    
+    .create-input {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    /* Stack profile stats on mobile */
+    .profile-stats {
+        gap: 20px;
+    }
+    
+    .stat-number {
+        font-size: 20px;
+    }
+}
+
+/* Fix for tap highlights on mobile */
+.action-btn, .create-input, .story, .post-menu, .dropdown-item {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Better touch targets for dropdown */
+.dropdown-item {
+    padding: 14px 16px;  /* Larger touch area */
+}
+
+/* Fix for fixed positioning on mobile */
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+/* Ensure content doesn't go under navbar */
+body {
+    padding-top: 0;
+}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== LOGIN CARD ========== */
+        .login-card {
+            background: #121212;
+            border-radius: 24px;
+            border: 1px solid #262626;
+            padding: 32px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .login-card:hover {
+            border-color: #363636;
+        }
+
+        /* ========== HEADER ========== */
+        .header-icon {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header-icon span {
+            font-size: 64px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(135deg, #fff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .subtitle span {
+            color: #a855f7;
+        }
+
+        /* ========== FORM ========== */
+        .login-form {
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8e8e8e;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #363636;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 16px;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: #5a5a5a;
+        }
+
+        /* ========== LOGIN BUTTON ========== */
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ========== SIGNUP LINK ========== */
+        .signup-prompt {
+            text-align: center;
+            padding-top: 16px;
+            border-top: 1px solid #262626;
+            margin-top: 8px;
+        }
+
+        .signup-prompt p {
+            color: #8e8e8e;
+            font-size: 14px;
+        }
+
+        .signup-prompt a {
+            color: #a855f7;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 4px;
+            transition: color 0.2s;
+        }
+
+        .signup-prompt a:hover {
+            color: #c084fc;
+            text-decoration: underline;
+        }
+
+        /* ========== PRIVACY NOTE ========== */
+        .privacy-note {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #5a5a5a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .privacy-note span {
+            color: #a855f7;
+        }
+
+        /* ========== ERROR MESSAGE ========== */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            color: #f87171;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* ========== LOADING STATE ========== */
+        .login-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .login-btn.loading span:first-child {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 450px) {
+            .login-card {
+                padding: 24px 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .header-icon span {
+                font-size: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-card">
+        <!-- Header Icon -->
+        <div class="header-icon">
+            <span>🎭</span>
+        </div>
+
+        <h1>whisper</h1>
+        <div class="subtitle">
+            <span>●</span> anonymous <span>●</span> private <span>●</span>
+        </div>
+
+        <!-- Error Message (if any) -->
+        {% if error %}
+        <div class="error-message">
+            ⚠️ {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- Login Form -->
+        <form class="login-form" method="POST" action="/login" id="login-form">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="input-field" placeholder="Enter your username" required autofocus>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="input-field" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="login-btn">
+                <span>→</span>
+                <span>Enter anonymously</span>
+            </button>
+        </form>
+
+        <!-- Signup Link -->
+        <div class="signup-prompt">
+            <p>New here? <a href="/signup">Create account</a></p>
+        </div>
+
+        <!-- Privacy Note -->
+        <div class="privacy-note">
+            <span>🔒</span> 100% anonymous · no tracking
+            <span>🔒</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Form submission handling
+    const form = document.getElementById('login-form');
+    const submitBtn = document.getElementById('login-btn');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+
+    // Remove any existing error message on input
+    function clearErrorOnInput() {
+        const errorDiv = document.querySelector('.error-message');
+        if (errorDiv) {
+            errorDiv.style.display = 'none';
+        }
+    }
+
+    usernameInput.addEventListener('input', clearErrorOnInput);
+    passwordInput.addEventListener('input', clearErrorOnInput);
+
+    // Form validation and submission
+    form.addEventListener('submit', function(e) {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        // Basic validation
+        if (!username) {
+            e.preventDefault();
+            showError('Please enter your username');
+            usernameInput.focus();
+            return;
+        }
+
+        if (!password) {
+            e.preventDefault();
+            showError('Please enter your password');
+            passwordInput.focus();
+            return;
+        }
+
+        // Show loading state
+        submitBtn.classList.add('loading');
+        submitBtn.innerHTML = '<span>⏳</span><span>Logging in...</span>';
+        submitBtn.disabled = true;
+    });
+
+    function showError(message) {
+        // Remove existing error
+        const existingError = document.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+
+        // Create new error
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `⚠️ ${message}`;
+        
+        // Insert at top of form
+        const form = document.querySelector('.login-form');
+        form.insertBefore(errorDiv, form.firstChild);
+    }
+
+    // Add Enter key support
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const activeElement = document.activeElement;
+            if (activeElement === usernameInput || activeElement === passwordInput) {
+                e.preventDefault();
+                form.dispatchEvent(new Event('submit'));
+            }
+        }
+    });
+
+    // Auto-focus username field on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        usernameInput.focus();
+    });
+</script>
+
+</body>
+</html>

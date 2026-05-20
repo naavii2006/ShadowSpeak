@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Reports</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 24px;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .reports-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .report-card {
+            background: #121212;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #262626;
+            transition: transform 0.2s;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-2px);
+            border-color: #667eea;
+        }
+        
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #262626;
+        }
+        
+        .reporter {
+            color: #667eea;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .reporter-icon {
+            font-size: 20px;
+        }
+        
+        .date {
+            color: #8e8e8e;
+            font-size: 12px;
+        }
+        
+        .reason {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 12px;
+            border-radius: 12px;
+            margin: 15px 0;
+            color: #f87171;
+        }
+        
+        .reason strong {
+            color: #ef4444;
+        }
+        
+        .post-content {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        .post-content p {
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .post-label {
+            font-size: 12px;
+            color: #8e8e8e;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .delete-btn:hover {
+            background: #ef4444;
+            transform: scale(1.02);
+        }
+        
+        .no-reports {
+            text-align: center;
+            padding: 60px 20px;
+            background: #121212;
+            border-radius: 16px;
+            border: 1px solid #262626;
+            color: #8e8e8e;
+        }
+        
+        .no-reports span {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 16px;
+        }
+        
+        .stats-badge {
+            display: inline-block;
+            background: #262626;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .report-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Reported Posts</h1>
+            <a href="/admin/logout" class="logout-btn">🚪 Logout</a>
+        </div>
+        
+        <div class="reports-grid">
+            {% if reports %}
+                {% for report in reports %}
+                <div class="report-card">
+                    <div class="report-header">
+                        <div class="reporter">
+                            <span class="reporter-icon">🚩</span>
+                            Reported by: @{{ report.reporter_name }}
+                        </div>
+                        <div class="date">{{ report.created_at or report.timestamp }}</div>
+                    </div>
+                    
+                    <div class="reason">
+                        <strong>📢 Reason:</strong> {{ report.reason }}
+                    </div>
+                    
+                    <div class="post-content">
+                        <div class="post-label">📝 Reported Post Content</div>
+                        <p>{{ report.post_content[:300] }}{% if report.post_content and report.post_content|length > 300 %}...{% endif %}</p>
+                        {% if not report.post_content %}
+                        <p style="color: #666; font-style: italic;">[Media content - no text]</p>
+                        {% endif %}
+                    </div>
+                    
+                    <a href="/admin/delete_post/{{ report.post_id }}/{{ report.post_owner_id }}" 
+                       class="delete-btn"
+                       onclick="return confirm('⚠️ Delete this post? The user will receive a warning.')">
+                        🗑️ Delete Post & Warn User
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-reports">
+                    <span>✨</span>
+                    <p>No reported posts yet</p>
+                    <p style="margin-top: 10px; font-size: 14px;">Reports will appear here when users flag inappropriate content</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Create Post • Whisper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <style>
+        /* Mobile Responsive Fixes */
+@media (max-width: 768px) {
+    /* Posts take full width */
+    .post-card, .create-card, .navbar, .search-container {
+        margin: 8px auto;
+    }
+    
+    /* Smaller fonts on mobile */
+    .post-username, .caption-username {
+        font-size: 13px;
+    }
+    
+    .post-time, .comment-time {
+        font-size: 10px;
+    }
+    
+    /* Touch-friendly buttons */
+    .action-btn {
+        padding: 12px;
+        font-size: 28px;
+    }
+    
+    /* Better spacing for comments */
+    .comment-item {
+        gap: 8px;
+    }
+    
+    .comment-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    
+    /* Navigation icons smaller on mobile */
+    .nav-icons {
+        gap: 12px;
+    }
+    
+    .nav-icons a {
+        font-size: 20px;
+    }
+    
+    /* Stories row adjustments */
+    .story-ring {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .story-inner {
+        width: 56px;
+        height: 56px;
+        font-size: 28px;
+    }
+    
+    .story-name {
+        font-size: 10px;
+    }
+    
+    /* Search bar adjustments */
+    .search-bar {
+        padding: 6px 12px;
+    }
+    
+    .search-bar input {
+        font-size: 14px;
+    }
+    
+    /* Modal adjustments */
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    /* Toast notifications */
+    .toast-message {
+        bottom: 20px;
+        left: 16px;
+        right: 16px;
+        transform: none;
+        width: auto;
+        font-size: 13px;
+    }
+}
+
+/* Extra small devices (phones under 400px) */
+@media (max-width: 480px) {
+    .post-header {
+        padding: 10px 12px;
+    }
+    
+    .post-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    
+    .post-content {
+        font-size: 13px;
+        padding: 0 12px 10px 12px;
+    }
+    
+    .post-actions {
+        padding: 4px 12px;
+        gap: 12px;
+    }
+    
+    .action-btn {
+        padding: 8px;
+        font-size: 24px;
+    }
+    
+    .comments-section {
+        padding: 8px 12px;
+    }
+    
+    .add-comment {
+        padding: 8px 12px;
+    }
+    
+    .add-comment input {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .create-header {
+        gap: 8px;
+    }
+    
+    .create-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    
+    .create-input {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    /* Stack profile stats on mobile */
+    .profile-stats {
+        gap: 20px;
+    }
+    
+    .stat-number {
+        font-size: 20px;
+    }
+}
+
+/* Fix for tap highlights on mobile */
+.action-btn, .create-input, .story, .post-menu, .dropdown-item {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Better touch targets for dropdown */
+.dropdown-item {
+    padding: 14px 16px;  /* Larger touch area */
+}
+
+/* Fix for fixed positioning on mobile */
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+/* Ensure content doesn't go under navbar */
+body {
+    padding-top: 0;
+}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.5;
+        }
+
+        /* ========== NAVIGATION BAR ========== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-link:hover {
+            transform: scale(1.05);
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .create-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* ========== CREATE CARD ========== */
+        .create-card {
+            background: #121212;
+            border-radius: 24px;
+            border: 1px solid #262626;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header-area {
+            padding: 24px 24px 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #262626;
+        }
+
+        .mask-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .header-text h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header-text p {
+            font-size: 13px;
+            color: #8e8e8e;
+        }
+
+        /* Prompt Chips */
+        .prompt-chips {
+            padding: 20px 24px 12px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #262626;
+        }
+
+        .chip {
+            background: #262626;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #363636;
+        }
+
+        .chip:hover {
+            background: #363636;
+            transform: translateY(-2px);
+            border-color: #a855f7;
+        }
+
+        /* Form */
+        .post-form {
+            padding: 20px 24px;
+        }
+
+        .field-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #8e8e8e;
+            display: block;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Textarea */
+        textarea {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #363636;
+            border-radius: 16px;
+            padding: 16px;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.5;
+            outline: none;
+            transition: all 0.2s;
+            color: #ffffff;
+            resize: vertical;
+            min-height: 180px;
+        }
+
+        textarea:focus {
+            border-color: #a855f7;
+            background: #1a1a1a;
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+        }
+
+        textarea::placeholder {
+            color: #5a5a5a;
+        }
+
+        /* File Upload */
+        .file-zone {
+            background: #1a1a1a;
+            border: 2px dashed #363636;
+            border-radius: 16px;
+            transition: all 0.2s;
+        }
+
+        .file-zone:hover {
+            border-color: #a855f7;
+            background: #202020;
+        }
+
+        .file-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        .file-label span {
+            font-size: 24px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-hint {
+            font-size: 11px;
+            color: #6a6a6a;
+            margin-top: 8px;
+            padding: 0 4px;
+        }
+
+        .file-name {
+            font-size: 12px;
+            color: #a855f7;
+            margin-top: 8px;
+            padding: 0 4px;
+        }
+
+        /* Post Button */
+        .post-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 24px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .post-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Anonymous Note */
+        .anon-note {
+            margin-top: 24px;
+            padding: 16px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #8e8e8e;
+            border: 1px solid #262626;
+        }
+
+        /* Character Counter */
+        .char-counter {
+            text-align: right;
+            font-size: 11px;
+            color: #6a6a6a;
+            margin-top: 8px;
+        }
+
+        .char-counter.warning {
+            color: #f97316;
+        }
+
+        .char-counter.danger {
+            color: #ef4444;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #8e8e8e;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .create-card {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Media Preview */
+        .media-preview {
+            margin-top: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #1a1a1a;
+            position: relative;
+        }
+
+        .media-preview img,
+        .media-preview video {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+        }
+
+        .remove-media {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .create-container {
+                padding: 12px 12px;
+            }
+            
+            .header-area {
+                padding: 20px 20px 12px 20px;
+            }
+            
+            .prompt-chips {
+                padding: 16px 20px 8px 20px;
+            }
+            
+            .post-form {
+                padding: 16px 20px;
+            }
+            
+            .chip {
+                font-size: 12px;
+                padding: 6px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">✨ whisper</div>
+            <a href="/feed" class="back-link">✕</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="create-container">
+        <div class="create-card">
+            <!-- Header -->
+            <div class="header-area">
+                <div class="mask-icon">🎭</div>
+                <div class="header-text">
+                    <h2>Create post</h2>
+                    <p>Speak freely, stay anonymous</p>
+                </div>
+            </div>
+
+            <!-- Prompt Chips (Quick Templates) -->
+            <div class="prompt-chips">
+                <div class="chip" data-prompt="🤫 My deepest secret is...">🤫 Deep secret</div>
+                <div class="chip" data-prompt="🔥 Unpopular opinion: ">🔥 Hot take</div>
+                <div class="chip" data-prompt="💔 I need to confess: ">💔 Confession</div>
+                <div class="chip" data-prompt="👀 Ask me anything: ">👀 AMA</div>
+                <div class="chip" data-prompt="💘 To my crush: ">💘 Crush note</div>
+                <div class="chip" data-prompt="😈 My alter ego thinks: ">😈 Alter ego</div>
+                <div class="chip" data-prompt="📹 Check out this: ">📹 Video idea</div>
+            </div>
+
+            <!-- Form -->
+            <form class="post-form" method="POST" action="/create_post" enctype="multipart/form-data" id="post-form">
+                <div class="field-group">
+                    <label for="content">What's on your mind?</label>
+                    <textarea id="content" name="content" placeholder="Write something anonymously..." maxlength="2000"></textarea>
+                    <div class="char-counter" id="char-counter">
+                        <span id="char-count">0</span> / 2000 characters
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="media">📎 Attach media (optional)</label>
+                    <div class="file-zone">
+                        <label for="media" class="file-label">
+                            <span>📁</span>
+                            Choose file
+                        </label>
+                        <input type="file" id="media" name="media" accept="image/*,video/*,.mp4,.mov,.avi,.webm,.ogg">
+                        <div class="file-hint">
+                            Supports: Images (JPG, PNG, GIF) and Videos (MP4, MOV, WebM) • Max 50MB
+                        </div>
+                        <div class="file-name" id="file-name-display"></div>
+                    </div>
+                    <div id="media-preview" class="media-preview" style="display: none;"></div>
+                </div>
+
+                <button type="submit" class="post-btn" id="submit-btn">
+                    <span>🕊️</span>
+                    Post anonymously
+                </button>
+            </form>
+
+            <div class="anon-note">
+                <span>🔒</span>
+                No identity stored • 100% anonymous
+                <span>🔒</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Get elements
+            const textarea = document.getElementById('content');
+            const charCountSpan = document.getElementById('char-count');
+            const charCounterDiv = document.getElementById('char-counter');
+            const fileInput = document.getElementById('media');
+            const fileNameDisplay = document.getElementById('file-name-display');
+            const mediaPreview = document.getElementById('media-preview');
+            const submitBtn = document.getElementById('submit-btn');
+            const form = document.getElementById('post-form');
+
+            // Handle URL prompt parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const promptText = urlParams.get('prompt');
+            if (promptText) {
+                textarea.value = promptText;
+                updateCharCount();
+                textarea.focus();
+            }
+
+            // Character counter
+            function updateCharCount() {
+                const length = textarea.value.length;
+                charCountSpan.textContent = length;
+                
+                if (length >= 1900) {
+                    charCounterDiv.classList.add('danger');
+                    charCounterDiv.classList.remove('warning');
+                } else if (length >= 1800) {
+                    charCounterDiv.classList.add('warning');
+                    charCounterDiv.classList.remove('danger');
+                } else {
+                    charCounterDiv.classList.remove('warning', 'danger');
+                }
+            }
+
+            textarea.addEventListener('input', updateCharCount);
+            updateCharCount();
+
+            // Prompt chips - fill textarea
+            const chips = document.querySelectorAll('.chip');
+            chips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const prompt = this.getAttribute('data-prompt');
+                    if (textarea.value.trim() === '') {
+                        textarea.value = prompt;
+                    } else {
+                        textarea.value += '\n\n' + prompt;
+                    }
+                    updateCharCount();
+                    textarea.focus();
+                });
+            });
+
+            // File selection and preview
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+                    const fileType = file.type;
+                    
+                    // Validate file size (50MB max)
+                    if (file.size > 50 * 1024 * 1024) {
+                        fileNameDisplay.innerHTML = '❌ File too large (max 50MB)';
+                        fileNameDisplay.style.color = '#ef4444';
+                        this.value = '';
+                        mediaPreview.style.display = 'none';
+                        mediaPreview.innerHTML = '';
+                        return;
+                    }
+                    
+                    fileNameDisplay.innerHTML = `📎 Selected: ${file.name} (${fileSize} MB)`;
+                    fileNameDisplay.style.color = '#a855f7';
+                    
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        mediaPreview.style.display = 'block';
+                        if (fileType.startsWith('image/')) {
+                            mediaPreview.innerHTML = `
+                                <img src="${e.target.result}" alt="Preview">
+                                <button class="remove-media" onclick="removeMedia()">✕</button>
+                            `;
+                        } else if (fileType.startsWith('video/')) {
+                            mediaPreview.innerHTML = `
+                                <video controls preload="metadata" src="${e.target.result}"></video>
+                                <button class="remove-media" onclick="removeMedia()">✕</button>
+                            `;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    removeMedia();
+                }
+            });
+
+            // Remove media function
+            window.removeMedia = function() {
+                fileInput.value = '';
+                fileNameDisplay.innerHTML = '';
+                mediaPreview.style.display = 'none';
+                mediaPreview.innerHTML = '';
+            };
+
+            // Form submission validation
+            form.addEventListener('submit', function(e) {
+                const content = textarea.value.trim();
+                const hasFile = fileInput.files && fileInput.files[0];
+                
+                if (!content && !hasFile) {
+                    e.preventDefault();
+                    alert('Please enter some text or attach a media file.');
+                    return;
+                }
+                
+                // Disable button to prevent double submission
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.6';
+                submitBtn.innerHTML = '<span>⏳</span> Posting...';
+            });
+
+            // Auto-resize textarea
+            function autoResize() {
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 400) + 'px';
+            }
+            textarea.addEventListener('input', autoResize);
+            autoResize();
+        })();
+    </script>
+
+</body>
+</html>
