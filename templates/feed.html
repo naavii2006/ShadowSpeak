@@ -13,18 +13,49 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             color: #ffffff;
             line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* Animated gradient background */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 30, 62, 0.8), rgba(15, 52, 96, 0.8));
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.15), transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.1), transparent 50%);
+            z-index: -1;
         }
 
         /* ========== NAVIGATION BAR ========== */
         .navbar {
             position: sticky;
             top: 0;
-            background: rgba(10, 10, 10, 0.95);
+            background: rgba(15, 25, 45, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
             padding: 12px 16px;
             z-index: 100;
         }
@@ -40,7 +71,7 @@
         .logo {
             font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, #fff, #a855f7);
+            background: linear-gradient(135deg, #fff, #a855f7, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
@@ -56,7 +87,7 @@
             color: #e0e0e0;
             text-decoration: none;
             font-size: 22px;
-            transition: transform 0.2s;
+            transition: all 0.2s;
         }
 
         .nav-icons a:hover {
@@ -72,13 +103,14 @@
         }
 
         .search-bar {
-            background: #1a1a1a;
+            background: rgba(30, 40, 60, 0.8);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 8px 16px;
             display: flex;
             align-items: center;
             gap: 10px;
-            border: 1px solid #2a2a2a;
+            border: 1px solid rgba(168, 85, 247, 0.3);
         }
 
         .search-bar span {
@@ -100,11 +132,19 @@
         }
 
         .search-bar button {
-            background: none;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
             border: none;
-            color: #a855f7;
+            border-radius: 8px;
+            padding: 6px 16px;
+            color: white;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-bar button:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
         }
 
         /* ========== STORIES RING ========== */
@@ -149,7 +189,7 @@
             width: 66px;
             height: 66px;
             border-radius: 50%;
-            background: #0a0a0a;
+            background: #1a1a2e;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -158,18 +198,19 @@
 
         .story-name {
             font-size: 12px;
-            color: #8e8e8e;
+            color: #ccc;
         }
 
         /* ========== CREATE POST CARD ========== */
         .create-card {
             max-width: 600px;
             margin: 16px auto;
-            background: #121212;
+            background: rgba(30, 40, 60, 0.7);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 12px 16px;
-            border: 1px solid #2a2a2a;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .create-header {
@@ -191,8 +232,8 @@
 
         .create-input {
             flex: 1;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
+            background: rgba(20, 30, 50, 0.6);
+            border: 1px solid rgba(168, 85, 247, 0.3);
             border-radius: 24px;
             padding: 12px 16px;
             color: #e0e0e0;
@@ -202,26 +243,38 @@
         }
 
         .create-input:hover {
-            background: #222;
+            background: rgba(30, 40, 60, 0.8);
             border-color: #a855f7;
         }
 
-        /* ========== POST CARD - IMPROVED VISIBILITY ========== */
+        /* ========== POST CARD - COLORFUL DESIGN ========== */
         .post-card {
             max-width: 600px;
             margin: 16px auto;
-            background: #121212;
+            background: linear-gradient(135deg, rgba(35, 45, 65, 0.9), rgba(25, 35, 55, 0.9));
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid #2a2a2a;
+            border: 1px solid rgba(168, 85, 247, 0.3);
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .post-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            border-color: #3a3a3a;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(168, 85, 247, 0.2);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        /* Different colors for alternating posts */
+        .post-card:nth-child(odd) {
+            background: linear-gradient(135deg, rgba(45, 35, 65, 0.9), rgba(35, 25, 55, 0.9));
+            border-left: 3px solid #a855f7;
+        }
+
+        .post-card:nth-child(even) {
+            background: linear-gradient(135deg, rgba(35, 45, 65, 0.9), rgba(25, 35, 55, 0.9));
+            border-right: 3px solid #ec4899;
         }
 
         .post-header {
@@ -229,7 +282,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #1e1e1e;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .post-user {
@@ -258,14 +311,14 @@
 
         .post-time {
             font-size: 11px;
-            color: #6a6a6a;
+            color: #aaa;
             margin-top: 2px;
         }
 
         .post-menu {
             font-size: 20px;
             cursor: pointer;
-            color: #8e8e8e;
+            color: #aaa;
             padding: 8px;
             position: relative;
             border-radius: 50%;
@@ -273,7 +326,8 @@
         }
 
         .post-menu:hover {
-            background: #1e1e1e;
+            background: rgba(255, 255, 255, 0.1);
+            color: #a855f7;
         }
 
         /* Dropdown Menu */
@@ -281,9 +335,9 @@
             position: absolute;
             right: 0;
             top: 100%;
-            background: #1e1e1e;
+            background: #1e2a3a;
             border-radius: 12px;
-            border: 1px solid #333;
+            border: 1px solid rgba(168, 85, 247, 0.3);
             overflow: hidden;
             min-width: 150px;
             z-index: 200;
@@ -307,11 +361,11 @@
         }
 
         .dropdown-item:hover {
-            background: #2a2a2a;
+            background: rgba(168, 85, 247, 0.2);
         }
 
         .dropdown-item.delete {
-            color: #ef4444;
+            color: #f87171;
         }
 
         /* ========== POST CONTENT ========== */
@@ -320,15 +374,15 @@
             font-size: 15px;
             line-height: 1.6;
             color: #e0e0e0;
-            background: #0e0e0e;
-            margin: 8px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            margin: 12px;
             border-radius: 16px;
         }
 
         /* ========== POST MEDIA ========== */
         .post-media {
             width: 100%;
-            background: #000;
+            background: rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -349,7 +403,7 @@
             padding: 8px 16px 12px 16px;
             display: flex;
             gap: 24px;
-            border-top: 1px solid #1e1e1e;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .action-btn {
@@ -357,7 +411,7 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-            color: #8e8e8e;
+            color: #aaa;
             transition: all 0.2s;
             padding: 8px;
             border-radius: 50%;
@@ -366,7 +420,7 @@
         .action-btn:hover {
             transform: scale(1.1);
             color: #fff;
-            background: #1e1e1e;
+            background: rgba(168, 85, 247, 0.3);
         }
 
         .action-btn.liked {
@@ -401,16 +455,15 @@
 
         /* ========== COMMENTS SECTION ========== */
         .comments-wrapper {
-            background: #080808;
+            background: rgba(0, 0, 0, 0.3);
             margin-top: 12px;
-            border-top: 1px solid #1e1e1e;
         }
 
         .comments-header {
             padding: 14px 16px 8px 16px;
             font-size: 13px;
             font-weight: 600;
-            color: #a855f7;
+            color: #ec4899;
             letter-spacing: 0.5px;
         }
 
@@ -424,7 +477,7 @@
             margin-bottom: 14px;
             font-size: 14px;
             padding: 10px 12px;
-            background: #0e0e0e;
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 16px;
         }
 
@@ -432,7 +485,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: #1e1e1e;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -460,7 +513,7 @@
 
         .comment-time {
             font-size: 10px;
-            color: #6a6a6a;
+            color: #888;
             margin-top: 4px;
         }
 
@@ -482,14 +535,14 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            background: #080808;
-            border-top: 1px solid #1e1e1e;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .add-comment input {
             flex: 1;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
+            background: rgba(20, 30, 50, 0.6);
+            border: 1px solid rgba(168, 85, 247, 0.3);
             border-radius: 24px;
             color: white;
             font-size: 14px;
@@ -502,12 +555,20 @@
         }
 
         .add-comment button {
-            background: none;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
             border: none;
-            color: #a855f7;
+            border-radius: 24px;
+            padding: 8px 20px;
+            color: white;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-comment button:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
         }
 
         /* ========== REPORT MODAL ========== */
@@ -525,12 +586,12 @@
         }
 
         .modal-content {
-            background: #1a1a1a;
+            background: linear-gradient(135deg, #1e2a3a, #16213e);
             border-radius: 20px;
             padding: 24px;
             width: 90%;
             max-width: 400px;
-            border: 1px solid #333;
+            border: 1px solid rgba(168, 85, 247, 0.3);
         }
 
         .modal-content h3 {
@@ -540,8 +601,8 @@
 
         .modal-content textarea {
             width: 100%;
-            background: #0e0e0e;
-            border: 1px solid #333;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(168, 85, 247, 0.3);
             border-radius: 12px;
             padding: 12px;
             color: white;
@@ -565,12 +626,12 @@
         }
 
         .submit-report {
-            background: #ed4956;
+            background: linear-gradient(135deg, #ed4956, #c62828);
             color: white;
         }
 
         .cancel-report {
-            background: #2a2a2a;
+            background: #2a3a50;
             color: white;
         }
 
@@ -578,7 +639,7 @@
         .loading-spinner {
             text-align: center;
             padding: 20px;
-            color: #8e8e8e;
+            color: #a855f7;
         }
 
         .loading-spinner.hidden {
@@ -589,7 +650,7 @@
         .empty-feed {
             text-align: center;
             padding: 80px 20px;
-            color: #6a6a6a;
+            color: #aaa;
         }
 
         @keyframes fadeIn {
@@ -604,7 +665,7 @@
         /* Responsive */
         @media (max-width: 600px) {
             .post-card {
-                margin: 12px 12px;
+                margin: 12px;
             }
             
             .post-content {
@@ -787,7 +848,7 @@
                     <div class="comment-item" style="border-bottom: none; background: none;">
                         <div class="comment-avatar">💬</div>
                         <div class="comment-content">
-                            <div class="comment-text" style="color: #6a6a6a;">No comments yet. Be the first to comment!</div>
+                            <div class="comment-text" style="color: #aaa;">No comments yet. Be the first to comment!</div>
                         </div>
                     </div>
                     {% endif %}
