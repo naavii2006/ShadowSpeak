@@ -371,12 +371,10 @@ def login_required(f):
 
 def time_ago(timestamp):
     try:
-        # Handle both string and datetime objects
         if isinstance(timestamp, str):
             post_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
         else:
             post_time = timestamp
-        
         now = datetime.now()
         diff = now - post_time
         
@@ -475,17 +473,16 @@ def feed():
     conn = get_db()
     cursor = conn.cursor()
     
+    # PostgreSQL-compatible query - using subquery for like count
     cursor.execute("""
         SELECT posts.*, 
                users.display_name as author_name,
                users.theme as author_theme,
-               COUNT(DISTINCT likes.id) as like_count,
+               (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) as like_count,
                EXISTS(SELECT 1 FROM saved_posts WHERE saved_posts.post_id = posts.id AND saved_posts.user_id = %s) as is_saved
         FROM posts
-        LEFT JOIN likes ON posts.id = likes.post_id
         JOIN users ON posts.user_id = users.id
         WHERE posts.hidden = 0
-        GROUP BY posts.id
         ORDER BY posts.created_at DESC
         LIMIT 20
     """, (session["user_id"],))
@@ -520,13 +517,11 @@ def api_posts():
         SELECT posts.*, 
                users.display_name as author_name,
                users.theme as author_theme,
-               COUNT(DISTINCT likes.id) as like_count,
+               (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) as like_count,
                EXISTS(SELECT 1 FROM saved_posts WHERE saved_posts.post_id = posts.id AND saved_posts.user_id = %s) as is_saved
         FROM posts
-        LEFT JOIN likes ON posts.id = likes.post_id
         JOIN users ON posts.user_id = users.id
         WHERE posts.hidden = 0
-        GROUP BY posts.id
         ORDER BY posts.created_at DESC
         LIMIT %s OFFSET %s
     """, (session["user_id"], per_page, offset))
@@ -673,14 +668,12 @@ def saved_posts():
         SELECT posts.*, 
                users.display_name as author_name,
                users.theme as author_theme,
-               COUNT(DISTINCT likes.id) as like_count,
+               (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) as like_count,
                saved_posts.created_at as saved_at
         FROM saved_posts
         JOIN posts ON saved_posts.post_id = posts.id
         JOIN users ON posts.user_id = users.id
-        LEFT JOIN likes ON posts.id = likes.post_id
         WHERE saved_posts.user_id = %s AND posts.hidden = 0
-        GROUP BY posts.id
         ORDER BY saved_posts.created_at DESC
     """, (session["user_id"],))
     saved_posts_list = cursor.fetchall()
@@ -704,11 +697,10 @@ def profile(display_name):
         return "User not found", 404
     
     cursor.execute("""
-        SELECT posts.*, COUNT(DISTINCT likes.id) as like_count
+        SELECT posts.*, 
+               (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) as like_count
         FROM posts
-        LEFT JOIN likes ON posts.id = likes.post_id
         WHERE posts.user_id = %s AND posts.hidden = 0
-        GROUP BY posts.id
         ORDER BY posts.created_at DESC
     """, (user["id"],))
     user_posts = cursor.fetchall()
@@ -737,14 +729,12 @@ def trending():
     
     cursor.execute("""
         SELECT posts.*, 
-               COUNT(DISTINCT likes.id) as like_count,
+               (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) as like_count,
                users.display_name as author_name,
                users.theme as author_theme
         FROM posts
-        LEFT JOIN likes ON posts.id = likes.post_id
         JOIN users ON posts.user_id = users.id
         WHERE posts.created_at > NOW() - INTERVAL '1 day' AND posts.hidden = 0
-        GROUP BY posts.id
         ORDER BY like_count DESC
         LIMIT 30
     """)
@@ -854,12 +844,10 @@ def search():
         SELECT posts.*, 
                users.display_name as author_name,
                users.theme as author_theme,
-               COUNT(DISTINCT likes.id) as like_count
+               (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) as like_count
         FROM posts
-        LEFT JOIN likes ON posts.id = likes.post_id
         JOIN users ON posts.user_id = users.id
         WHERE posts.hidden = 0 AND posts.content LIKE %s
-        GROUP BY posts.id
         ORDER BY posts.created_at DESC
     """, (f'%{query}%',))
     posts = cursor.fetchall()
