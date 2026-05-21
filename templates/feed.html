@@ -229,7 +229,7 @@
             border-color: #a855f7;
         }
 
-        /* ========== POST CARD - IMPROVED SEPARATION ========== */
+        /* ========== POST CARD ========== */
         .post-card {
             max-width: 600px;
             margin: 20px auto;
@@ -257,7 +257,7 @@
             border-right: 3px solid #ec4899;
         }
 
-        /* Post separator - visible gap between posts */
+        /* Post separator */
         .post-card:not(:last-child)::after {
             content: '';
             position: absolute;
@@ -363,7 +363,7 @@
             color: #f87171;
         }
 
-        /* ========== POST CONTENT ========== */
+        /* ========== POST CONTENT - PRESERVE PARAGRAPHS ========== */
         .post-content {
             padding: 16px;
             font-size: 15px;
@@ -372,6 +372,26 @@
             background: #0f0f1a;
             margin: 12px;
             border-radius: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-family: inherit;
+        }
+
+        /* Style for paragraphs inside post content */
+        .post-content p {
+            margin-bottom: 12px;
+        }
+
+        .post-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* For the caption text */
+        .caption-text {
+            color: #ccc;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         /* ========== POST MEDIA ========== */
@@ -490,6 +510,17 @@
             color: #ccc;
             font-size: 13px;
             line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Style for paragraphs in comments */
+        .comment-text p {
+            margin-bottom: 8px;
+        }
+
+        .comment-text p:last-child {
+            margin-bottom: 0;
         }
 
         .comment-time {
@@ -762,10 +793,8 @@
                 </div>
             </div>
 
-            <!-- Post Content -->
-            <div class="post-content">
-                {{ post.content }}
-            </div>
+            <!-- Post Content - Preserves line breaks and paragraphs -->
+            <div class="post-content">{{ post.content }}</div>
 
             <!-- Post Media -->
             {% if post.media_path %}
@@ -1064,7 +1093,7 @@
                             <div class="dropdown-item" onclick="savePost(${post.id})">📌 Save</div>
                         </div>
                     </div>
-                    <div class="post-content">${escapeHtml(post.content.substring(0, 200))}${post.content.length > 200 ? '...' : ''}</div>
+                    <div class="post-content" style="white-space: pre-wrap;">${escapeHtml(post.content.substring(0, 200))}${post.content.length > 200 ? '...' : ''}</div>
                     <div class="post-actions">
                         <button class="action-btn like-btn" data-post-id="${post.id}" onclick="likePost(${post.id})">❤️</button>
                         <button class="action-btn save-action-btn" onclick="savePost(${post.id})">📌</button>
